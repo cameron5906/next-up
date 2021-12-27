@@ -18,6 +18,7 @@ discordClient.on("ready", ({ user }) => {
     console.log(`Logged in as ${user.tag}`);
 
     discordClient.on("message", (msg) => {
+        // Do not process messages from ourselves
         if (msg.author.id === discordClient?.user?.id) return;
 
         console.log(`Processing message: ${msg.content}`);
@@ -31,6 +32,7 @@ discordClient.on("ready", ({ user }) => {
 });
 
 export function setVoiceChannel(voiceChannel: VoiceChannel) {
+    // First check if we are already on a voice channel
     if (voiceConnection !== null) {
         console.log(
             `Disconnecting from voice channel ${activeVoiceChannel?.name}`
@@ -39,6 +41,8 @@ export function setVoiceChannel(voiceChannel: VoiceChannel) {
     }
 
     console.log(`Setting voice channel to ${voiceChannel.name}`);
+
+    // Set the active channel and create a connection, and then attach audio player
     activeVoiceChannel = voiceChannel;
     voiceConnection = joinVoiceChannel({
         channelId: voiceChannel.id,
@@ -52,8 +56,10 @@ export function setVoiceChannel(voiceChannel: VoiceChannel) {
 export function leaveVoiceChannel() {
     console.log(`Leaving active voice channel`);
 
+    // Short circuit if we aren't in one
     if (voiceConnection === null) return;
 
+    // Disconnect and clean up
     activeVoiceChannel = null;
     voiceConnection.disconnect();
     voiceConnection = null;

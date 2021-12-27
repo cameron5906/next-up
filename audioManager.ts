@@ -7,7 +7,7 @@ import { onSongEnded } from "./playlist";
 
 export const audioPlayer = createAudioPlayer({
     behaviors: {
-        noSubscriber: NoSubscriberBehavior.Play,
+        noSubscriber: NoSubscriberBehavior.Play, // Keep playing even if no one is listening / not on a voice channel
     },
 });
 
