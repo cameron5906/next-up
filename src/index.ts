@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 // Setup env vars
 dotenv.config();
 
-import { Message, TextChannel } from "discord.js";
+import { EmbedField, Message, TextChannel } from "discord.js";
 import {
     activeVoiceChannel,
     discordClient,
@@ -230,6 +230,13 @@ export async function onMessage(message: Message, localId: string) {
 }
 
 export async function onNewSongPlaying(song: QueuedSong) {
+    const queue = getQueue();
+    let fields: EmbedField[] = [];
+
+    if (queue.length > 0) {
+        fields.push({ name: "Next up", value: queue[0].title, inline: true });
+    }
+
     // Notify song playing in channel it was requested
     song.requestorChannel.send({
         embeds: [
@@ -237,6 +244,7 @@ export async function onNewSongPlaying(song: QueuedSong) {
                 author: { name: song.artists || undefined },
                 title: song.title,
                 description: "Now playing",
+                fields,
                 footer: { text: `Requested by ${song.requestor.username}` },
             },
         ],
