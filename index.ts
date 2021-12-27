@@ -11,6 +11,7 @@ import {
     getActiveSong,
     getQueue,
     onSongEnded,
+    shuffleQueue,
 } from "./playlist";
 import { QueueSongOperation } from "./types/QueueSongOperation";
 import { QueuedSong } from "./types/QueuedSong";
@@ -43,6 +44,8 @@ export async function onMessage(message: Message, localId: string) {
         message.channel.send({
             content: `Valid commands:
 \`@NextUp [song name]\` - Add a song
+\`@NextUp [spotify song url]\` - Add a song from Spotify
+\`@NextUp [spotify playlist url]\` - Add an entire playlist of songs from Spotify (limit 10)
 \`@NextUp queue\` - List queued songs
 \`@NextUp clear\` - Clears the song queue
 \`@NextUp stop\` - Stops the current song
@@ -94,11 +97,19 @@ export async function onMessage(message: Message, localId: string) {
     if (query === "clear") {
         clearQueue();
         message.channel.send({ content: "Queue has been cleared" });
+        return;
     }
 
     // Stop command
     if (query === "stop") {
         stopPlaying();
+        return;
+    }
+
+    if (query === "shuffle" && getQueue().length > 0) {
+        message.channel.send({ content: "Queue has been shuffled" });
+        shuffleQueue();
+        return;
     }
 
     // Spotify playlist command
@@ -123,21 +134,25 @@ export async function onMessage(message: Message, localId: string) {
 
         const playlist = await getPlaylist(playlistId);
 
-        playlist?.tracks.items.forEach(({ track }) =>
-            addToPlaylist(
-                false,
-                `${track.name} - ${track.artists
-                    .slice(0, 2)
-                    .map((a) => a.name)
-                    .join(", ")}`,
-                message.author,
-                message.channel as TextChannel
-            )
-        );
+        if (playlist) {
+            const trackCount = Math.min(playlist.tracks.items.length, 10);
 
-        message.channel.send({
-            content: `Adding ${playlist?.tracks.items.length} songs from "${playlist?.name}" from Spotify`,
-        });
+            playlist.tracks.items.slice(0, trackCount).forEach(({ track }) =>
+                addToPlaylist(
+                    false,
+                    `${track.name} - ${track.artists
+                        .slice(0, 2)
+                        .map((a) => a.name)
+                        .join(", ")}`,
+                    message.author,
+                    message.channel as TextChannel
+                )
+            );
+
+            message.channel.send({
+                content: `Adding ${trackCount} songs from "${playlist?.name}" from Spotify`,
+            });
+        }
 
         return;
     }

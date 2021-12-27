@@ -13,6 +13,7 @@ import {
 } from "./discord";
 import { onNewSongPlaying } from ".";
 import { QueueSongResult } from "./types/QueueSongResult";
+import { shuffle } from "./util";
 
 const queue: QueuedSong[] = [];
 let activeSong: QueuedSong | null = null;
@@ -150,4 +151,9 @@ export function getActiveSong() {
 export function clearQueue() {
     console.log("Clearing queue");
     queue.length = 0;
+}
+
+export function shuffleQueue() {
+    console.log("Shuffling queue");
+    shuffle(queue);
 }
