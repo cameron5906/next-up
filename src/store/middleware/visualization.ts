@@ -8,7 +8,7 @@ let vizInterval: number = -1;
 let songStartAt: number = -1;
 
 /**
- * Simple logging middleware for debugging
+ * Handles real-time visualization logic while a song is playing (i.e elapsed time, colors)
  */
 export const visualization =
     (store: Store) => (next: (action: any) => void) => (action: any) => {
