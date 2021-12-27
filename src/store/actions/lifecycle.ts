@@ -2,7 +2,7 @@
  * All actions relating to lifecycle events
  */
 
-export const SongActions = {
+export const LifecycleActions = {
     SONG_ENDED: "SONG_ENDED",
 };
 
@@ -11,5 +11,5 @@ export interface SongAction {
 }
 
 export const songEnded = (): SongAction => ({
-    type: SongActions.SONG_ENDED,
+    type: LifecycleActions.SONG_ENDED,
 });

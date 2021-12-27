@@ -1,6 +1,6 @@
 import { leaveDiscordVoiceChannel } from "../../apis/discord";
 import { QueuedSong } from "../../types";
-import { SongActions, playNextSong } from "../actions";
+import { LifecycleActions, playNextSong } from "../actions";
 import { Store } from "../store";
 
 /**
@@ -12,7 +12,7 @@ export const lifecycle =
 
         // If a song ends, check to see if a new one can be played from the queue
         // Otherwise, leave the current voice channel
-        if (action.type === SongActions.SONG_ENDED) {
+        if (action.type === LifecycleActions.SONG_ENDED) {
             const { queue } = store.getState() as { queue: QueuedSong[] };
 
             if (queue.length > 0) {

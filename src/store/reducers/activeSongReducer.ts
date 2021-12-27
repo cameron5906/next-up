@@ -1,6 +1,6 @@
 import { QueuedSong } from "../../types/QueuedSong";
 import { PlayNextSongAction, QueueActions } from "../actions/queue";
-import { SongActions } from "../actions/lifecycle";
+import { LifecycleActions } from "../actions/lifecycle";
 
 export type ActiveSongState = {
     song: QueuedSong | null;
@@ -15,7 +15,7 @@ export const activeSongReducer = (
     action: any
 ): ActiveSongState => {
     switch (action.type) {
-        case SongActions.SONG_ENDED: {
+        case LifecycleActions.SONG_ENDED: {
             return { ...state, song: null };
         }
 
