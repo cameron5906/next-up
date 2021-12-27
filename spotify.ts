@@ -1,19 +1,21 @@
 import SpotifyWebApi from "spotify-web-api-node";
 
 const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET } = process.env;
+console.log(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET);
 const api = new SpotifyWebApi({
     clientId: SPOTIFY_CLIENT_ID,
     clientSecret: SPOTIFY_CLIENT_SECRET,
 });
 
-function setupToken() {
+export function setupSpotify() {
     api.clientCredentialsGrant()
         .then((data) => {
+            console.log(`Setting Spotify token: ${data.body.access_token}`);
             api.setAccessToken(data.body.access_token);
 
             // On expiration of token, automatically re-do token setup
             setTimeout(() => {
-                setupToken();
+                setupSpotify();
             }, data.body.expires_in * 1000);
         })
         .catch((ex) => {});
@@ -31,5 +33,14 @@ export async function getPlaylist(
     return response.body;
 }
 
-// Get the token immediately at runtime
-setupToken();
+export async function getTrack(
+    id: string
+): Promise<SpotifyApi.SingleTrackResponse | null> {
+    console.log(`Retrieving track from Spotify: ${id}`);
+
+    const response = await api.getTrack(id);
+
+    if (response.statusCode !== 200) return null;
+
+    return response.body;
+}

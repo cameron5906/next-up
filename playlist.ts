@@ -21,7 +21,9 @@ export async function addToPlaylist(
     isYoutube: boolean,
     query: string,
     requestor: User,
-    textChannel: TextChannel
+    textChannel: TextChannel,
+    artists: string = "",
+    thumbnail: string = ""
 ): Promise<QueueSongResult> {
     let videoId = "";
     let title = "";
@@ -35,6 +37,8 @@ export async function addToPlaylist(
 
         title = results[0].snippet.title;
         videoId = results[0].id.videoId;
+        artists = results[0].snippet.channelTitle;
+        thumbnail = results[0].snippet.thumbnails.default.url;
 
         if (queue.some((s) => s.videoId === results[0].id.videoId))
             return { status: QueueSongOperation.ALREADY_ADDED };
@@ -49,7 +53,9 @@ export async function addToPlaylist(
     // Add the song details to the queue
     queue.push({
         query,
-        title: title,
+        artists,
+        thumbnail,
+        title,
         requestor: requestor,
         requestorChannel: textChannel,
         videoId,

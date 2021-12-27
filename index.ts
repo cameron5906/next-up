@@ -1,4 +1,9 @@
-import { Message, TextChannel } from "discord.js";
+import dotenv from "dotenv";
+
+// Setup env vars
+dotenv.config();
+
+import { Message, MessageOptions, TextChannel } from "discord.js";
 import { activeVoiceChannel, discordClient, setDiscordStatus } from "./discord";
 import {
     addToPlaylist,
@@ -9,29 +14,22 @@ import {
 } from "./playlist";
 import { QueueSongOperation } from "./types/QueueSongOperation";
 import { QueuedSong } from "./types/QueuedSong";
-import { getPlaylist } from "./spotify";
+import { getPlaylist, getTrack, setupSpotify } from "./spotify";
 import { audioPlayer, stopPlaying } from "./audioManager";
 import { AudioPlayerStatus } from "@discordjs/voice";
-import dotenv from "dotenv";
-
-// Setup env vars
-dotenv.config();
 
 const { DISCORD_BOT_TOKEN } = process.env;
 
 export async function onMessage(message: Message, localId: string) {
     // Clean the @NextUp tag out of the message
-    const query = message.content
-        .split(`<@!${localId}>`)[1]
-        .toLowerCase()
-        .trim();
+    const query = message.content.split(`<@!${localId}>`)[1].trim();
 
     // If no command given and message is just a mention, try to go to next song if applicable
     if (query.length === 0) {
         const queue = getQueue();
         if (audioPlayer.state.status === AudioPlayerStatus.Playing) {
             message.channel.send({
-                content: `Okay, moving on to ${queue[0].title}`,
+                content: `Okay, moving on...`,
             });
             stopPlaying();
             onSongEnded();
@@ -133,6 +131,41 @@ export async function onMessage(message: Message, localId: string) {
         return;
     }
 
+    if (query.indexOf("open.spotify.com/track/") !== -1) {
+        const track = await getTrack(
+            query.split("spotify.com/track/")[1].split("?")[0]
+        );
+
+        if (track) {
+            addToPlaylist(
+                false,
+                `${track.name} - ${track.artists.map((a) => a.name)}`,
+                message.author,
+                message.channel as TextChannel,
+                track.artists.map((a) => a.name).join(", "),
+                track.album.images[0].url
+            );
+
+            message.channel.send({
+                embeds: [
+                    {
+                        title: track.name,
+                        description: "Added to queue",
+                        thumbnail: {
+                            url: track.album.images[0].url,
+                            width: 32,
+                            height: 32,
+                        },
+                        author: { name: track.artists[0].name },
+                        footer: { text: `Position #${getQueue().length}` },
+                    },
+                ],
+            });
+        }
+
+        return;
+    }
+
     // Attempt to add to the playlist
     const result = await addToPlaylist(
         true,
@@ -140,6 +173,9 @@ export async function onMessage(message: Message, localId: string) {
         message.author,
         message.channel as TextChannel
     );
+
+    if (result.status === QueueSongOperation.ADDED && getQueue().length === 0)
+        return;
 
     // Send feedback response
     message.channel.send({
@@ -165,12 +201,20 @@ export async function onMessage(message: Message, localId: string) {
 export async function onNewSongPlaying(song: QueuedSong) {
     // Notify song playing in channel it was requested
     song.requestorChannel.send({
-        content: `Now playing: ${song.title}`,
+        embeds: [
+            {
+                author: { name: song.artists || undefined },
+                title: song.title,
+                description: "Now playing",
+                footer: { text: `Requested by ${song.requestor.username}` },
+            },
+        ],
     });
 
     setDiscordStatus(`${song.title} in ${activeVoiceChannel?.name}`);
 }
 
 discordClient.login(DISCORD_BOT_TOKEN);
+setupSpotify();
 
 process.on("uncaughtException", (e) => console.log(e));
