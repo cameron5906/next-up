@@ -3,7 +3,8 @@ import {
     createAudioPlayer,
     NoSubscriberBehavior,
 } from "@discordjs/voice";
-import { onSongEnded } from "./song-queue";
+import { store } from "./store";
+import { songEnded } from "./store/actions/song";
 
 export const audioPlayer = createAudioPlayer({
     behaviors: {
@@ -24,6 +25,6 @@ audioPlayer.on("stateChange", (oldState, newState) => {
         oldState.status === AudioPlayerStatus.Playing &&
         newState.status === AudioPlayerStatus.Idle
     ) {
-        onSongEnded();
+        store.dispatch(songEnded());
     }
 });

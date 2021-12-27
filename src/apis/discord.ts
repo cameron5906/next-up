@@ -1,5 +1,12 @@
-import { joinVoiceChannel, VoiceConnection } from "@discordjs/voice";
-import { Client, Intents, TextChannel, User, VoiceChannel } from "discord.js";
+import { VoiceConnection, joinVoiceChannel } from "@discordjs/voice";
+import {
+    VoiceChannel,
+    Client,
+    Intents,
+    TextChannel,
+    User,
+    MessageEmbed,
+} from "discord.js";
 import { onMessage } from "..";
 import { audioPlayer } from "../audio-manager";
 
@@ -31,7 +38,7 @@ discordClient.on("ready", ({ user }) => {
     });
 });
 
-export function setVoiceChannel(voiceChannel: VoiceChannel) {
+export function setActiveDiscordVoiceChannel(voiceChannel: VoiceChannel) {
     // First check if we are already on a voice channel
     if (voiceConnection !== null) {
         console.log(
@@ -53,7 +60,7 @@ export function setVoiceChannel(voiceChannel: VoiceChannel) {
     voiceConnection?.subscribe(audioPlayer);
 }
 
-export function leaveVoiceChannel() {
+export function leaveDiscordVoiceChannel() {
     console.log(`Leaving active voice channel`);
 
     // Short circuit if we aren't in one
@@ -65,7 +72,7 @@ export function leaveVoiceChannel() {
     voiceConnection = null;
 }
 
-export async function getActiveVoiceChannel(
+export async function getDiscordUserVoiceChannel(
     channel: TextChannel,
     user: User
 ): Promise<VoiceChannel | null> {
@@ -95,4 +102,18 @@ export async function setDiscordStatus(text: string) {
         afk: text === "",
         status: "online",
     });
+}
+
+export async function sendDiscordEmbed(
+    embed: MessageEmbed,
+    channel: TextChannel
+) {
+    await channel.send({ embeds: [embed] });
+}
+
+export async function sendDiscordMessage(
+    content: string,
+    channel: TextChannel
+) {
+    await channel.send(content);
 }

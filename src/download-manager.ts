@@ -36,7 +36,6 @@ export async function getAudioStream(url: string): Promise<PassThrough> {
     // Begin downloading the audio, piping it through the duplex tunnel in real-time
     https.get(url, (res) => {
         res.on("data", (data) => tunnel.write(data));
-        res.on("end", () => tunnel.end());
     });
 
     return tunnel;
