@@ -12,11 +12,16 @@ export const QueueActions = {
 export type AddToQueueAction = {
     type: string;
     position?: number;
+    isBulk: boolean;
 } & QueuedSong;
 
-export const addToQueue = (song: QueuedSong): AddToQueueAction => ({
+export const addToQueue = (
+    song: QueuedSong,
+    isBulk: boolean = false
+): AddToQueueAction => ({
     type: QueueActions.ADD_TO_QUEUE,
     ...song,
+    isBulk,
 });
 
 export interface PlayNextSongAction {

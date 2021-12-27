@@ -1,3 +1,5 @@
+import { MessageEmbed } from "discord.js";
+import { sendDiscordEmbed } from "../../apis/discord";
 import { getTrack, getPlaylist } from "../../apis/spotify";
 import { getYoutubeResults } from "../../apis/youtube";
 import {
@@ -61,16 +63,35 @@ export const songResolution =
             // Loop through the first 10 songs and dispatch an action for adding each to the queue
             playlist.tracks.items.slice(0, trackCount).forEach(({ track }) => {
                 store.dispatch(
-                    addToQueue({
-                        title: track.name,
-                        artists: track.artists.map((a) => a.name).join(", "),
-                        thumbnail: track.album.images[0].url,
-                        videoId: "",
-                        requestor: addSpotifyPlaylist.requestor,
-                        requestorChannel: addSpotifyPlaylist.requestorChannel,
-                    })
+                    addToQueue(
+                        {
+                            title: track.name,
+                            artists: track.artists
+                                .map((a) => a.name)
+                                .join(", "),
+                            thumbnail: track.album.images[0].url,
+                            videoId: "",
+                            requestor: addSpotifyPlaylist.requestor,
+                            requestorChannel:
+                                addSpotifyPlaylist.requestorChannel,
+                        },
+                        true // Bulk add operation flag
+                    )
                 );
             });
+
+            // Send an embedding to show how many songs were added
+            sendDiscordEmbed(
+                {
+                    title: playlist.name,
+                    description: `${trackCount} songs added to the queue`,
+                    thumbnail:
+                        playlist.images.length > 0
+                            ? { url: playlist.images[0].url }
+                            : undefined,
+                } as MessageEmbed,
+                addSpotifyPlaylist.requestorChannel
+            );
 
             return next(addSpotifyPlaylist);
         }

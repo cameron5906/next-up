@@ -29,18 +29,24 @@ export const feedback =
                     thumbnail,
                     requestorChannel,
                     position,
+                    isBulk,
                 } = action as AddToQueueAction;
 
-                sendDiscordEmbed(
-                    {
-                        author: { name: artists },
-                        title,
-                        description: "Added to queue",
-                        thumbnail: { url: thumbnail },
-                        footer: { text: `Position #${(position || 0) + 1}` }, // Offset position by one to avoid 0-based index
-                    } as MessageEmbed,
-                    requestorChannel
-                );
+                // If its a bulk add operation, don't send an embedding (spam)
+                if (!isBulk) {
+                    sendDiscordEmbed(
+                        {
+                            author: { name: artists },
+                            title,
+                            description: "Added to queue",
+                            thumbnail: { url: thumbnail },
+                            footer: {
+                                text: `Position #${(position || 0) + 1}`,
+                            }, // Offset position by one to avoid 0-based index
+                        } as MessageEmbed,
+                        requestorChannel
+                    );
+                }
             }
         }
 
