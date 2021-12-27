@@ -32,3 +32,4 @@ A self hosted replacement for Discord music streaming using YoutubeDL and suppor
 - Procedural radio (using Spotify recommendations API)
 - Contextual radio based on current game (using Spotify recommendations API)
 - Saving of state
+- Dockerization
