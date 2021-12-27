@@ -49,6 +49,7 @@ export async function onMessage(message: Message, localId: string) {
 \`@NextUp queue\` - List queued songs
 \`@NextUp clear\` - Clears the song queue
 \`@NextUp stop\` - Stops the current song
+\`@NextUp shuffle\` - Shuffles the current queue of songs randomly
 \`@NextUp\` - Moves to the next song in queue
 `,
         });
