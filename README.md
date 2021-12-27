@@ -24,3 +24,11 @@ A self hosted replacement for Discord music streaming using YoutubeDL and suppor
 5. Run `npm install`
 
 6. Start with `npm start`
+
+
+
+## Roadmap
+
+- Procedural radio (using Spotify recommendations API)
+- Contextual radio based on current game (using Spotify recommendations API)
+- Saving of state
