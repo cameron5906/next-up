@@ -1,16 +1,16 @@
 import { TextChannel, User } from "discord.js";
 import { createAudioResource, AudioPlayerStatus } from "@discordjs/voice";
-import { getYoutubeResults } from "./youtubeApi";
+import { getYoutubeResults } from "./apis/youtube";
 import { QueueSongOperation } from "./types/QueueSongOperation";
-import { getAudioStream, getDownloadUrl } from "./downloader";
+import { getAudioStream, getDownloadUrl } from "./download-manager";
 import { QueuedSong } from "./types/QueuedSong";
-import { audioPlayer } from "./audioManager";
+import { audioPlayer } from "./audio-manager";
 import {
     activeVoiceChannel,
     getActiveVoiceChannel,
     leaveVoiceChannel,
     setVoiceChannel,
-} from "./discord";
+} from "./apis/discord";
 import { onNewSongPlaying } from ".";
 import { QueueSongResult } from "./types/QueueSongResult";
 import { shuffle } from "./util";

@@ -3,8 +3,12 @@ import dotenv from "dotenv";
 // Setup env vars
 dotenv.config();
 
-import { Message, MessageOptions, TextChannel } from "discord.js";
-import { activeVoiceChannel, discordClient, setDiscordStatus } from "./discord";
+import { Message, TextChannel } from "discord.js";
+import {
+    activeVoiceChannel,
+    discordClient,
+    setDiscordStatus,
+} from "./apis/discord";
 import {
     addToPlaylist,
     clearQueue,
@@ -12,11 +16,11 @@ import {
     getQueue,
     onSongEnded,
     shuffleQueue,
-} from "./playlist";
+} from "./song-queue";
 import { QueueSongOperation } from "./types/QueueSongOperation";
 import { QueuedSong } from "./types/QueuedSong";
-import { getPlaylist, getTrack, setupSpotify } from "./spotify";
-import { audioPlayer, stopPlaying } from "./audioManager";
+import { getPlaylist, getTrack, setupSpotify } from "./apis/spotify";
+import { audioPlayer, stopPlaying } from "./audio-manager";
 import { AudioPlayerStatus } from "@discordjs/voice";
 
 const { DISCORD_BOT_TOKEN } = process.env;

@@ -1,5 +1,5 @@
-import { YoutubeResult } from "./types/YoutubeResult";
-import { YoutubeSearchResponse } from "./types/YoutubeSearchResponse";
+import { YoutubeResult } from "../types/YoutubeResult";
+import { YoutubeSearchResponse } from "../types/YoutubeSearchResponse";
 import fetch from "cross-fetch";
 
 const { YOUTUBE_KEY } = process.env;

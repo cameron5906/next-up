@@ -1,7 +1,7 @@
 import { joinVoiceChannel, VoiceConnection } from "@discordjs/voice";
 import { Client, Intents, TextChannel, User, VoiceChannel } from "discord.js";
-import { onMessage } from ".";
-import { audioPlayer } from "./audioManager";
+import { onMessage } from "..";
+import { audioPlayer } from "../audio-manager";
 
 export let activeVoiceChannel: VoiceChannel | null = null;
 export let voiceConnection: VoiceConnection | null = null;

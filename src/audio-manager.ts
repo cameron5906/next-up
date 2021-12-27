@@ -3,7 +3,7 @@ import {
     createAudioPlayer,
     NoSubscriberBehavior,
 } from "@discordjs/voice";
-import { onSongEnded } from "./playlist";
+import { onSongEnded } from "./song-queue";
 
 export const audioPlayer = createAudioPlayer({
     behaviors: {
