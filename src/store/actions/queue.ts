@@ -1,3 +1,7 @@
+/**
+ * All actions relating to queue control
+ */
+
 import { QueuedSong } from "../../types/QueuedSong";
 
 export const QueueActions = {

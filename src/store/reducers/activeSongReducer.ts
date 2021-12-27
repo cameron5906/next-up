@@ -1,6 +1,6 @@
 import { QueuedSong } from "../../types/QueuedSong";
 import { PlayNextSongAction, QueueActions } from "../actions/queue";
-import { SongActions } from "../actions/song";
+import { SongActions } from "../actions/lifecycle";
 
 export type ActiveSongState = {
     song: QueuedSong | null;

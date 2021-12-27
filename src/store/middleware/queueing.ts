@@ -13,16 +13,22 @@ import { QueueActions, playNextSong } from "../actions";
 import { ActiveSongState } from "../reducers";
 import { Store } from "../store";
 
+/**
+ * Middleware for queue management
+ */
 export const queueing =
     (store: Store) => (next: (action: any) => void) => async (action: any) => {
+        // A song is being added to the queue
         if (action.type === QueueActions.ADD_TO_QUEUE) {
             const state = store.getState();
 
+            // Re-write the action for down-stream processors to know about the position of the song in queue
             next({
                 ...action,
                 position: state.queue.length,
             });
 
+            // Retrieve the current queue and active song states
             const {
                 queue: newQueue,
                 activeSong: { song: currentSong },
@@ -31,7 +37,7 @@ export const queueing =
                 activeSong: ActiveSongState;
             };
 
-            console.log(`Queue now size ${newQueue.length}`);
+            // If only the added song is in queue and there is no active song, play it immediately
             if (newQueue.length === 1 && currentSong === null) {
                 store.dispatch(playNextSong());
             }
@@ -39,10 +45,12 @@ export const queueing =
             return;
         }
 
+        // Begin playing the next song in queue
         if (action.type === QueueActions.PLAY_NEXT_SONG) {
             const { queue } = store.getState() as { queue: QueuedSong[] };
             if (queue.length === 0) return next(action);
 
+            // Include which song is now playing for down-stream processors
             next({ ...action, song: queue[0] });
 
             const song = queue[0];

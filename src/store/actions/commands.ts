@@ -1,3 +1,7 @@
+/**
+ * All actions relating to text commands that can be provided to the bot
+ */
+
 import { TextChannel } from "discord.js";
 
 export const CommandActions = {

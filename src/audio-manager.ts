@@ -4,7 +4,7 @@ import {
     NoSubscriberBehavior,
 } from "@discordjs/voice";
 import { store } from "./store";
-import { songEnded } from "./store/actions/song";
+import { songEnded } from "./store/actions/lifecycle";
 
 export const audioPlayer = createAudioPlayer({
     behaviors: {

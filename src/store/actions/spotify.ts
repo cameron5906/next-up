@@ -1,3 +1,7 @@
+/**
+ * All actions relating to Spotify
+ */
+
 import { TextChannel, User } from "discord.js";
 
 export const SpotifyActions = {

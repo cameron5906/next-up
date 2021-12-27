@@ -13,12 +13,16 @@ import {
 } from "../actions";
 import { Store } from "../store";
 
+/**
+ * Middleware for translating incoming messages into high-level actions
+ */
 export const textProcessing =
     (store: Store) => (next: (action: any) => void) => async (action: any) => {
         if (action.type !== MessageActions.PROCESS_MESSAGE) return next(action);
 
         const { text, sender, channel } = action as ProcessMessageAction;
 
+        // Check for Spotify song URL
         if (text.indexOf("open.spotify.com/track/") !== -1) {
             const trackId = text
                 .split("open.spotify.com/track/")[1]
@@ -30,6 +34,7 @@ export const textProcessing =
             return;
         }
 
+        // Check for Spotify playlist URL
         if (text.indexOf("open.spotify.com/playlist/") !== -1) {
             const playlistId = text
                 .split("open.spotify.com/playlist/")[1]
@@ -43,6 +48,7 @@ export const textProcessing =
             return;
         }
 
+        // Check for empty command, treat as Skip (@NextUp)
         if (text === "") {
             // Increment queue
             next(action);
@@ -50,6 +56,7 @@ export const textProcessing =
             return;
         }
 
+        // Check for text commands
         switch (text) {
             case "queue":
                 next(action);
@@ -74,6 +81,7 @@ export const textProcessing =
                 return;
         }
 
+        // If nothing was fulfilled above, treat it as a song search
         next(action);
         await store.dispatch(addYoutubeSong(text, sender, channel));
     };

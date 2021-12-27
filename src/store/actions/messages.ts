@@ -1,3 +1,7 @@
+/**
+ * All actions relating to incoming and outgoing messages
+ */
+
 import { TextChannel, User } from "discord.js";
 
 export const MessageActions = {

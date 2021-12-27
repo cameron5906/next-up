@@ -1,3 +1,7 @@
+/**
+ * All actions relating to lifecycle events
+ */
+
 export const SongActions = {
     SONG_ENDED: "SONG_ENDED",
 };

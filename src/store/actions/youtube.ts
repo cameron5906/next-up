@@ -1,3 +1,7 @@
+/**
+ * All actions relating to Youtube
+ */
+
 import { TextChannel, User } from "discord.js";
 
 export const YoutubeActions = {

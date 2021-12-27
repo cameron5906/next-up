@@ -6,8 +6,12 @@ import { Store } from "../store";
 import { stopPlaying } from "../../audio-manager";
 import { MessageEmbed } from "discord.js";
 
+/**
+ * Middleware for processing of commands that can control the bot
+ */
 export const commandProcessing =
     (store: Store) => (next: (action: any) => void) => (action: any) => {
+        // First verify there is a valid command here, otherwise break out
         if (
             ![
                 CommandActions.CLEAR_QUEUE,
@@ -23,11 +27,7 @@ export const commandProcessing =
         const commandAction = action as TextCommandAction;
 
         switch (action.type) {
-            case CommandActions.CLEAR_QUEUE: {
-                sendDiscordMessage("Queue cleared", commandAction.channel);
-                break;
-            }
-
+            // Help command
             case CommandActions.LIST_COMMANDS: {
                 sendDiscordMessage(
                     [
@@ -46,6 +46,7 @@ export const commandProcessing =
                 break;
             }
 
+            // Listing current queue contents
             case CommandActions.LIST_QUEUE: {
                 const {
                     queue,
@@ -55,12 +56,15 @@ export const commandProcessing =
                     activeSong: ActiveSongState;
                 };
 
+                // Initialize the embedding that will be used
                 const embedding: MessageEmbed = {} as MessageEmbed;
 
+                // If there is an active song, set it as the title of the embedding
                 if (activeSong !== null) {
                     embedding.title = `Now playing: ${activeSong.title}`;
                 }
 
+                // If there are songs in queue, include them in the description in numbered order
                 if (queue.length > 0) {
                     embedding.description = [
                         "Next up:",
@@ -73,30 +77,26 @@ export const commandProcessing =
                     ].join("\n");
                 }
 
+                // If no title has been set (no active song), set up a no active tracks embedding
                 if (!embedding.title) {
                     embedding.title = "No active tracks";
                     embedding.description =
                         "Try saying @NextUp [your song here]";
                 }
 
+                // Send the embedding as a response
                 sendDiscordEmbed(embedding, commandAction.channel);
                 break;
             }
 
-            case CommandActions.SHUFFLE_QUEUE: {
-                sendDiscordMessage(
-                    "Queue has been shuffled randomly",
-                    commandAction.channel
-                );
-                break;
-            }
-
+            // Skip the current song and dispatch an action
             case CommandActions.SKIP_SONG: {
                 stopPlaying();
                 store.dispatch(songEnded());
                 break;
             }
 
+            // Stop playing the active song
             case CommandActions.STOP_PLAYING: {
                 stopPlaying();
                 break;
