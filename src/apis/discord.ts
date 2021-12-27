@@ -108,12 +108,12 @@ export async function sendDiscordEmbed(
     embed: MessageEmbed,
     channel: TextChannel
 ) {
-    await channel.send({ embeds: [embed] });
+    return await channel.send({ embeds: [embed] });
 }
 
 export async function sendDiscordMessage(
     content: string,
     channel: TextChannel
 ) {
-    await channel.send(content);
+    return await channel.send(content);
 }

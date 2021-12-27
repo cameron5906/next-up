@@ -2,6 +2,7 @@
  * All actions relating to queue control
  */
 
+import { Message } from "discord.js";
 import { QueuedSong } from "../../types/QueuedSong";
 
 export const QueueActions = {
@@ -27,6 +28,7 @@ export const addToQueue = (
 export interface PlayNextSongAction {
     type: string;
     song?: QueuedSong;
+    message?: Message;
 }
 
 export const playNextSong = (): PlayNextSongAction => ({

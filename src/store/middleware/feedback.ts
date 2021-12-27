@@ -14,7 +14,7 @@ import { Store } from "../store";
  * Middleware for providing text channel feedback for various lifecycle events
  */
 export const feedback =
-    (store: Store) => (next: (action: any) => void) => (action: any) => {
+    (store: Store) => (next: (action: any) => void) => async (action: any) => {
         // Handle feedback for when a song is queued
         if (action.type === QueueActions.ADD_TO_QUEUE) {
             const {
@@ -55,7 +55,7 @@ export const feedback =
             const { song } = action as PlayNextSongAction;
             if (!song) return next(action);
 
-            sendDiscordEmbed(
+            const message = await sendDiscordEmbed(
                 {
                     author: { name: song.artists },
                     title: song.title,
@@ -65,6 +65,8 @@ export const feedback =
                 } as MessageEmbed,
                 song.requestorChannel
             );
+
+            return next({ ...action, message });
         }
 
         // Handle feedback for when the queue is cleared

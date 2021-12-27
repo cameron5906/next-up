@@ -1,13 +1,16 @@
 import { QueuedSong } from "../../types/QueuedSong";
 import { PlayNextSongAction, QueueActions } from "../actions/queue";
 import { LifecycleActions } from "../actions/lifecycle";
+import { Message } from "discord.js";
 
 export type ActiveSongState = {
     song: QueuedSong | null;
+    nowPlayingMessage: Message | null;
 };
 
 const defaultState: ActiveSongState = {
     song: null,
+    nowPlayingMessage: null,
 };
 
 export const activeSongReducer = (
@@ -20,10 +23,10 @@ export const activeSongReducer = (
         }
 
         case QueueActions.PLAY_NEXT_SONG: {
-            const { song } = action as PlayNextSongAction;
-            if (!song) return state;
+            const { song, message } = action as PlayNextSongAction;
+            if (!song || !message) return state;
 
-            return { ...state, song };
+            return { ...state, song, nowPlayingMessage: message };
         }
     }
 

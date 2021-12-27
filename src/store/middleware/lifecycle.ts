@@ -1,6 +1,7 @@
 import { leaveDiscordVoiceChannel } from "../../apis/discord";
 import { QueuedSong } from "../../types";
-import { LifecycleActions, playNextSong } from "../actions";
+import { addToHistory, LifecycleActions, playNextSong } from "../actions";
+import { ActiveSongState } from "../reducers";
 import { Store } from "../store";
 
 /**
@@ -13,7 +14,18 @@ export const lifecycle =
         // If a song ends, check to see if a new one can be played from the queue
         // Otherwise, leave the current voice channel
         if (action.type === LifecycleActions.SONG_ENDED) {
-            const { queue } = store.getState() as { queue: QueuedSong[] };
+            const {
+                queue,
+                activeSong: { song },
+            } = store.getState() as {
+                queue: QueuedSong[];
+                activeSong: ActiveSongState;
+            };
+
+            // Add the song that just finished to the history state
+            if (song) {
+                store.dispatch(addToHistory(song));
+            }
 
             if (queue.length > 0) {
                 store.dispatch(playNextSong());
