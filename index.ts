@@ -102,15 +102,26 @@ export async function onMessage(message: Message, localId: string) {
     }
 
     // Spotify playlist command
-    if (query.indexOf("spotify:") === 0) {
-        const parts = query.split(":");
-        if (parts.length !== 3 || parts[1] !== "playlist") {
-            message.channel.send({
-                content: `I can only do Spotify playlists right now`,
-            });
+    if (
+        query.indexOf("spotify:") === 0 ||
+        query.indexOf("open.spotify.com/playlist/") !== -1
+    ) {
+        let playlistId = "";
+
+        if (query.indexOf("spotify:") !== -1) {
+            const parts = query.split(":");
+            if (parts.length !== 3 || parts[1] !== "playlist") {
+                message.channel.send({
+                    content: `I can only do Spotify playlists right now`,
+                });
+            }
+
+            playlistId = parts[2];
+        } else {
+            playlistId = query.split("spotify.com/playlist/")[1].split("?")[0];
         }
 
-        const playlist = await getPlaylist(parts[2]);
+        const playlist = await getPlaylist(playlistId);
 
         playlist?.tracks.items.forEach(({ track }) =>
             addToPlaylist(
