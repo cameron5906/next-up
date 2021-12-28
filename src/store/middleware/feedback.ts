@@ -12,6 +12,7 @@ import {
     TextCommandAction,
 } from "../actions";
 import { ActiveSongState } from "../reducers";
+import { RadioState } from "../reducers/radioReducer";
 import { Store } from "../store";
 
 /**
@@ -56,6 +57,7 @@ export const feedback =
 
         // Handle feedback for when a new song begins to play
         if (action.type === QueueActions.PLAY_NEXT_SONG) {
+            const { radio } = store.getState() as { radio: RadioState };
             const { song } = action as PlayNextSongAction;
             if (!song) return next(action);
 
@@ -65,7 +67,11 @@ export const feedback =
                     title: song.title,
                     description: "Now playing",
                     thumbnail: { url: song.thumbnail },
-                    footer: { text: `Requested by ${song.requestor.username}` },
+                    footer: {
+                        text: radio.isPlaying
+                            ? `${radio.requestor?.username}'s radio`
+                            : `Requested by ${song.requestor.username}`,
+                    },
                 } as MessageEmbed,
                 song.requestorChannel
             );
