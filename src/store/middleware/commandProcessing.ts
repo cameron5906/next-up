@@ -105,6 +105,7 @@ export const commandProcessing =
 
                 if (isRadioPlaying) {
                     store.dispatch(stopRadio());
+                    stopPlaying();
                     return;
                 } else if (currentSong !== null) {
                     stopPlaying();

@@ -11,6 +11,7 @@ import {
     CommandActions,
     TextCommandAction,
 } from "../actions";
+import { RadioActions } from "../actions/radio";
 import { ActiveSongState } from "../reducers";
 import { RadioState } from "../reducers/radioReducer";
 import { Store } from "../store";
@@ -84,7 +85,7 @@ export const feedback =
         // Handle feedback for when the queue is cleared
         if (action.type === CommandActions.CLEAR_QUEUE) {
             const { channel } = action as TextCommandAction;
-            sendDiscordMessage("Queue cleared", channel);
+            sendDiscordMessage("Queue and radio seeds cleared", channel);
         }
 
         // Handle feedback for when the queue is shuffled
@@ -100,6 +101,17 @@ export const feedback =
                 "Okay, starting the radio. Use `@NextUp stop` to go back to playing songs from the queue.",
                 channel
             );
+        }
+
+        if (action.type === RadioActions.STOP_RADIO) {
+            const { radio } = store.getState() as { radio: RadioState };
+
+            if (radio.requestorChannel) {
+                sendDiscordMessage(
+                    "Going back to the regular queue",
+                    radio.requestorChannel
+                );
+            }
         }
 
         next(action);

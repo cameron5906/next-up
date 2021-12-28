@@ -2,6 +2,7 @@ import { ColorResolvable, MessageEmbed } from "discord.js";
 import { rgbToHex } from "../../util";
 import { LifecycleActions, PlayNextSongAction, QueueActions } from "../actions";
 import { ActiveSongState } from "../reducers";
+import { RadioState } from "../reducers/radioReducer";
 import { Store } from "../store";
 
 let vizInterval: number = -1;
@@ -22,8 +23,10 @@ export const visualization =
             vizInterval = (<unknown>setInterval(() => {
                 const {
                     activeSong: { nowPlayingMessage, song },
+                    radio,
                 } = store.getState() as {
                     activeSong: ActiveSongState;
+                    radio: RadioState;
                 };
 
                 if (!nowPlayingMessage) return;
@@ -42,7 +45,9 @@ export const visualization =
                             thumbnail: { url: song?.thumbnail },
                             color: hexColor as any,
                             footer: {
-                                text: `Requested by ${song?.requestor.username}`,
+                                text: radio.isPlaying
+                                    ? `${radio.requestor?.username}'s radio`
+                                    : `Requested by ${song?.requestor.username}`,
                             },
                         },
                     ],

@@ -68,6 +68,14 @@ export const radioReducer = (
                 seeds: [{ type: "track", id }, ...state.seeds.slice(0, 4)],
             };
         }
+
+        case CommandActions.CLEAR_QUEUE: {
+            return {
+                ...state,
+                isPlaying: false,
+                seeds: [],
+            };
+        }
     }
 
     return state;
