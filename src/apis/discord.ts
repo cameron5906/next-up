@@ -98,9 +98,9 @@ export async function setDiscordStatus(text: string) {
     console.log(`Setting discord presence`);
 
     discordClient.user?.setPresence({
-        activities: [{ name: text, type: "PLAYING" }],
+        activities: text !== "" ? [{ name: text, type: "PLAYING" }] : [],
         afk: text === "",
-        status: "online",
+        status: text === "" ? "idle" : "online",
     });
 }
 

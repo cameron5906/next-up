@@ -1,4 +1,4 @@
-import { leaveDiscordVoiceChannel } from "../../apis/discord";
+import { leaveDiscordVoiceChannel, setDiscordStatus } from "../../apis/discord";
 import { QueuedSong } from "../../types";
 import { addToHistory, LifecycleActions, playNextSong } from "../actions";
 import { ActiveSongState } from "../reducers";
@@ -30,6 +30,7 @@ export const lifecycle =
             if (queue.length > 0) {
                 store.dispatch(playNextSong());
             } else {
+                setDiscordStatus("");
                 leaveDiscordVoiceChannel();
             }
 

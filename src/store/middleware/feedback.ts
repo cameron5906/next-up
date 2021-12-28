@@ -1,5 +1,9 @@
 import { MessageEmbed } from "discord.js";
-import { sendDiscordEmbed, sendDiscordMessage } from "../../apis/discord";
+import {
+    sendDiscordEmbed,
+    sendDiscordMessage,
+    setDiscordStatus,
+} from "../../apis/discord";
 import {
     QueueActions,
     AddToQueueAction,
@@ -65,6 +69,8 @@ export const feedback =
                 } as MessageEmbed,
                 song.requestorChannel
             );
+
+            await setDiscordStatus(`${song.title} - ${song.artists}`);
 
             return next({ ...action, message });
         }
