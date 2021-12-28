@@ -22,9 +22,7 @@ export async function getDownloadUrl(
     );
 
     // Find the first result that is audio-only and OPUS codec
-    return details.formats.find(
-        (x) => x.vcodec === "none" && x.acodec === "opus"
-    )?.url;
+    return details.formats.find((x) => x.vcodec === "none")?.url;
 }
 
 export async function getAudioStream(url: string): Promise<PassThrough> {
