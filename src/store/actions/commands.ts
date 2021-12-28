@@ -11,6 +11,7 @@ export const CommandActions = {
     CLEAR_QUEUE: "CLEAR_QUEUE",
     SHUFFLE_QUEUE: "SHUFFLE_QUEUE",
     LIST_COMMANDS: "LIST_COMMANDS",
+    START_RADIO: "START_RADIO",
 };
 
 export interface TextCommandAction {
@@ -45,5 +46,10 @@ export const shuffleQueue = (channel: TextChannel): TextCommandAction => ({
 
 export const listCommands = (channel: TextChannel): TextCommandAction => ({
     type: CommandActions.LIST_COMMANDS,
+    channel,
+});
+
+export const startRadio = (channel: TextChannel): TextCommandAction => ({
+    type: CommandActions.START_RADIO,
     channel,
 });

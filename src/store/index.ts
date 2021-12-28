@@ -10,6 +10,7 @@ import {
 import { visualization } from "./middleware/visualization";
 import { queueReducer, activeSongReducer } from "./reducers";
 import { historyReducer } from "./reducers/historyReducer";
+import { radioReducer } from "./reducers/radioReducer";
 import { createStore } from "./store";
 
 export const store = createStore(
@@ -17,6 +18,7 @@ export const store = createStore(
         queue: queueReducer,
         activeSong: activeSongReducer,
         history: historyReducer,
+        radio: radioReducer,
     },
     [
         textProcessing,
