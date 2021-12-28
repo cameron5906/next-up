@@ -1,6 +1,13 @@
 import { leaveDiscordVoiceChannel, setDiscordStatus } from "../../apis/discord";
 import { QueuedSong } from "../../types";
-import { addToHistory, LifecycleActions, playNextSong } from "../actions";
+import {
+    addToHistory,
+    CommandActions,
+    LifecycleActions,
+    playNextSong,
+    PlayNextSongAction,
+    QueueActions,
+} from "../actions";
 import { ActiveSongState } from "../reducers";
 import { Store } from "../store";
 
@@ -22,11 +29,6 @@ export const lifecycle =
                 activeSong: ActiveSongState;
             };
 
-            // Add the song that just finished to the history state
-            if (song) {
-                store.dispatch(addToHistory(song));
-            }
-
             if (queue.length > 0) {
                 store.dispatch(playNextSong());
             } else {
@@ -34,6 +36,15 @@ export const lifecycle =
                 leaveDiscordVoiceChannel();
             }
 
+            return;
+        }
+
+        // When a new song begins playing, add it to history
+        if (action.type === QueueActions.PLAY_NEXT_SONG) {
+            const { song } = action as PlayNextSongAction;
+            if (!song) return;
+
+            store.dispatch(addToHistory(song));
             return;
         }
     };

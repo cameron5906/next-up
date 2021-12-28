@@ -19,12 +19,12 @@ export const store = createStore(
         history: historyReducer,
     },
     [
-        lifecycle,
         textProcessing,
         commandProcessing,
         songResolution,
         queueing,
         logging,
+        lifecycle,
         feedback,
         visualization,
     ]
