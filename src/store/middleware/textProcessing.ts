@@ -52,7 +52,7 @@ export const textProcessing =
         if (text === "") {
             // Increment queue
             next(action);
-            store.dispatch(skipSong(channel));
+            store.dispatch(skipSong(sender, channel));
             return;
         }
 
@@ -60,24 +60,24 @@ export const textProcessing =
         switch (text) {
             case "queue":
                 next(action);
-                store.dispatch(listQueue(channel));
+                store.dispatch(listQueue(sender, channel));
                 return;
             case "clear":
                 next(action);
-                store.dispatch(clearQueue(channel));
+                store.dispatch(clearQueue(sender, channel));
                 return;
             case "stop":
                 next(action);
-                store.dispatch(stopPlaying(channel));
+                store.dispatch(stopPlaying(sender, channel));
                 return;
             case "shuffle":
                 next(action);
-                store.dispatch(shuffleQueue(channel));
+                store.dispatch(shuffleQueue(sender, channel));
                 return;
             case "help":
             case "commands":
                 next(action);
-                store.dispatch(listCommands(channel));
+                store.dispatch(listCommands(sender, channel));
                 return;
         }
 

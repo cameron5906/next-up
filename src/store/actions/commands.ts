@@ -2,7 +2,7 @@
  * All actions relating to text commands that can be provided to the bot
  */
 
-import { TextChannel } from "discord.js";
+import { TextChannel, User } from "discord.js";
 
 export const CommandActions = {
     STOP_PLAYING: "STOP_PLAYING",
@@ -16,40 +16,69 @@ export const CommandActions = {
 
 export interface TextCommandAction {
     type: string;
+    user: User;
     channel: TextChannel;
 }
 
-export const stopPlaying = (channel: TextChannel): TextCommandAction => ({
+export const stopPlaying = (
+    user: User,
+    channel: TextChannel
+): TextCommandAction => ({
     type: CommandActions.STOP_PLAYING,
+    user,
     channel,
 });
 
-export const skipSong = (channel: TextChannel): TextCommandAction => ({
+export const skipSong = (
+    user: User,
+    channel: TextChannel
+): TextCommandAction => ({
     type: CommandActions.SKIP_SONG,
+    user,
     channel,
 });
 
-export const listQueue = (channel: TextChannel): TextCommandAction => ({
+export const listQueue = (
+    user: User,
+    channel: TextChannel
+): TextCommandAction => ({
     type: CommandActions.LIST_QUEUE,
+    user,
     channel,
 });
 
-export const clearQueue = (channel: TextChannel): TextCommandAction => ({
+export const clearQueue = (
+    user: User,
+    channel: TextChannel
+): TextCommandAction => ({
     type: CommandActions.CLEAR_QUEUE,
+    user,
     channel,
 });
 
-export const shuffleQueue = (channel: TextChannel): TextCommandAction => ({
+export const shuffleQueue = (
+    user: User,
+    channel: TextChannel
+): TextCommandAction => ({
     type: CommandActions.SHUFFLE_QUEUE,
+    user,
     channel,
 });
 
-export const listCommands = (channel: TextChannel): TextCommandAction => ({
+export const listCommands = (
+    user: User,
+    channel: TextChannel
+): TextCommandAction => ({
     type: CommandActions.LIST_COMMANDS,
+    user,
     channel,
 });
 
-export const startRadio = (channel: TextChannel): TextCommandAction => ({
+export const startRadio = (
+    user: User,
+    channel: TextChannel
+): TextCommandAction => ({
     type: CommandActions.START_RADIO,
+    user,
     channel,
 });
