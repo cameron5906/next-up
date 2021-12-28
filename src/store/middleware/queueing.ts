@@ -70,7 +70,9 @@ async function play(song: QueuedSong) {
     // If no videoId was already found for this request, find and assign it now
     if (videoId === "") {
         console.log(`Resolving Youtube video ID for ${song.title}`);
-        const results = await getYoutubeResults(song.title);
+        const results = await getYoutubeResults(
+            `${song.title} by ${song.artists} lyrics`
+        );
         videoId = results[0].id.videoId;
     }
 
