@@ -8,4 +8,6 @@ export interface QueuedSong {
     requestor: User;
     requestorChannel: TextChannel;
     videoId: string;
+    spotifyArtistId?: string;
+    spotifyTrackId?: string;
 }

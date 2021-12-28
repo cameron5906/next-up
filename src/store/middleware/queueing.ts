@@ -9,7 +9,11 @@ import { getYoutubeResults } from "../../apis/youtube";
 import { audioPlayer } from "../../audio-manager";
 import { getDownloadUrl, getAudioStream } from "../../download-manager";
 import { QueuedSong, QueueSongOperation } from "../../types";
-import { QueueActions, playNextSong } from "../actions";
+import {
+    QueueActions,
+    playNextSong,
+    PlaySongImmediateAction,
+} from "../actions";
 import { ActiveSongState } from "../reducers";
 import { Store } from "../store";
 
@@ -54,6 +58,17 @@ export const queueing =
             next({ ...action, song: queue[0] });
 
             const song = queue[0];
+            await play(song);
+
+            return;
+        }
+
+        if (action.type === QueueActions.PLAY_SONG_IMMEDIATE) {
+            const { song } = action as PlaySongImmediateAction;
+
+            // Override this action making it look like PLAY_NEXT_SONG for down-stream event processing
+            next({ type: QueueActions.PLAY_NEXT_SONG, song });
+
             await play(song);
 
             return;

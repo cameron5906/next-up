@@ -2,13 +2,19 @@ import { leaveDiscordVoiceChannel, setDiscordStatus } from "../../apis/discord";
 import { QueuedSong } from "../../types";
 import {
     addToHistory,
-    CommandActions,
     LifecycleActions,
     playNextSong,
     PlayNextSongAction,
     QueueActions,
 } from "../actions";
+import {
+    addRadioArtistSeed,
+    addRadioTrackSeed,
+    playNextRadioSong,
+    RadioActions,
+} from "../actions/radio";
 import { ActiveSongState } from "../reducers";
+import { RadioState } from "../reducers/radioReducer";
 import { Store } from "../store";
 
 /**
@@ -24,16 +30,22 @@ export const lifecycle =
             const {
                 queue,
                 activeSong: { song },
+                radio,
             } = store.getState() as {
                 queue: QueuedSong[];
                 activeSong: ActiveSongState;
+                radio: RadioState;
             };
 
-            if (queue.length > 0) {
-                store.dispatch(playNextSong());
+            if (radio.isPlaying) {
+                store.dispatch(playNextRadioSong());
             } else {
-                setDiscordStatus("");
-                leaveDiscordVoiceChannel();
+                if (queue.length > 0) {
+                    store.dispatch(playNextSong());
+                } else {
+                    setDiscordStatus("");
+                    leaveDiscordVoiceChannel();
+                }
             }
 
             return;
@@ -44,7 +56,26 @@ export const lifecycle =
             const { song } = action as PlayNextSongAction;
             if (!song) return;
 
+            if (song.spotifyArtistId) {
+                store.dispatch(addRadioArtistSeed(song.spotifyArtistId));
+            }
+
+            if (song.spotifyTrackId) {
+                store.dispatch(addRadioTrackSeed(song.spotifyTrackId));
+            }
+
             store.dispatch(addToHistory(song));
+            return;
+        }
+
+        // If the radio is stopped, try to continue playing from the queue
+        if (action.type === RadioActions.STOP_RADIO) {
+            const { queue } = store.getState() as { queue: QueuedSong[] };
+
+            if (queue.length > 0) {
+                store.dispatch(playNextSong());
+            }
+
             return;
         }
     };

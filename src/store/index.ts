@@ -7,6 +7,7 @@ import {
     logging,
     feedback,
 } from "./middleware";
+import { radio } from "./middleware/radio";
 import { visualization } from "./middleware/visualization";
 import { queueReducer, activeSongReducer } from "./reducers";
 import { historyReducer } from "./reducers/historyReducer";
@@ -27,6 +28,7 @@ export const store = createStore(
         queueing,
         logging,
         lifecycle,
+        radio,
         feedback,
         visualization,
     ]

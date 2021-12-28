@@ -17,6 +17,8 @@ export const queueReducer = (
                 requestor,
                 requestorChannel,
                 videoId,
+                spotifyArtistId,
+                spotifyTrackId,
             } = action as AddToQueueAction;
 
             if (
@@ -37,6 +39,8 @@ export const queueReducer = (
                     requestor,
                     requestorChannel,
                     videoId,
+                    spotifyArtistId,
+                    spotifyTrackId,
                 },
             ];
         }

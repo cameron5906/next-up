@@ -87,5 +87,14 @@ export const feedback =
             sendDiscordMessage("Queue has been shuffled randomly", channel);
         }
 
+        // Handle feedback for radio
+        if (action.type === CommandActions.START_RADIO) {
+            const { channel } = action as TextCommandAction;
+            sendDiscordMessage(
+                "Okay, starting the radio. Use `@NextUp stop` to go back to playing songs from the queue.",
+                channel
+            );
+        }
+
         next(action);
     };

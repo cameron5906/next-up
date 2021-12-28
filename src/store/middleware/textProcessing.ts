@@ -10,6 +10,7 @@ import {
     shuffleQueue,
     listCommands,
     addYoutubeSong,
+    startRadio,
 } from "../actions";
 import { Store } from "../store";
 
@@ -78,6 +79,12 @@ export const textProcessing =
             case "commands":
                 next(action);
                 store.dispatch(listCommands(sender, channel));
+                return;
+            case "radio":
+            case "start radio":
+            case "play radio":
+                next(action);
+                store.dispatch(startRadio(sender, channel));
                 return;
         }
 

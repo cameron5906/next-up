@@ -44,3 +44,39 @@ export async function getTrack(
 
     return response.body;
 }
+
+export async function getRecommendedSong(
+    artists: string[],
+    tracks: string[]
+): Promise<SpotifyApi.TrackObjectSimplified | null> {
+    console.log(`Retrieving recommended song from Spotify`);
+
+    const response = await api.getRecommendations({
+        seed_artists: artists,
+        seed_tracks: tracks,
+        limit: 5,
+    });
+
+    if (response.statusCode !== 200) return null;
+    if (response.body.tracks.length === 0) return null;
+
+    const randomTrack =
+        response.body.tracks[
+            Math.floor(Math.random() * response.body.tracks.length)
+        ];
+    return randomTrack;
+}
+
+export async function searchSpotifyTrack(
+    query: string
+): Promise<SpotifyApi.TrackObjectFull | null> {
+    console.log(`Searching for Spotify track: ${query}`);
+
+    const response = await api.searchTracks(query, { limit: 1 });
+
+    if (response.statusCode !== 200) return null;
+    if (!response.body.tracks || response.body.tracks?.items.length === 0)
+        return null;
+
+    return response.body.tracks.items[0];
+}

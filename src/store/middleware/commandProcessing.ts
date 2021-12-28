@@ -1,10 +1,16 @@
-import { sendDiscordEmbed, sendDiscordMessage } from "../../apis/discord";
+import {
+    leaveDiscordVoiceChannel,
+    sendDiscordEmbed,
+    sendDiscordMessage,
+} from "../../apis/discord";
 import { QueuedSong } from "../../types";
 import { CommandActions, TextCommandAction, songEnded } from "../actions";
 import { ActiveSongState } from "../reducers";
 import { Store } from "../store";
 import { stopPlaying } from "../../audio-manager";
 import { MessageEmbed } from "discord.js";
+import { RadioState } from "../reducers/radioReducer";
+import { stopRadio } from "../actions/radio";
 
 /**
  * Middleware for processing of commands that can control the bot
@@ -12,16 +18,7 @@ import { MessageEmbed } from "discord.js";
 export const commandProcessing =
     (store: Store) => (next: (action: any) => void) => (action: any) => {
         // First verify there is a valid command here, otherwise break out
-        if (
-            ![
-                CommandActions.CLEAR_QUEUE,
-                CommandActions.LIST_COMMANDS,
-                CommandActions.LIST_QUEUE,
-                CommandActions.SHUFFLE_QUEUE,
-                CommandActions.SKIP_SONG,
-                CommandActions.STOP_PLAYING,
-            ].some((t) => action.type === t)
-        )
+        if (!Object.values(CommandActions).includes(action.type))
             return next(action);
 
         const commandAction = action as TextCommandAction;
@@ -98,8 +95,39 @@ export const commandProcessing =
 
             // Stop playing the active song
             case CommandActions.STOP_PLAYING: {
-                stopPlaying();
+                const {
+                    activeSong: { song: currentSong },
+                    radio: { isPlaying: isRadioPlaying },
+                } = store.getState() as {
+                    activeSong: ActiveSongState;
+                    radio: RadioState;
+                };
+
+                if (isRadioPlaying) {
+                    store.dispatch(stopRadio());
+                    return;
+                } else if (currentSong !== null) {
+                    stopPlaying();
+                    leaveDiscordVoiceChannel();
+                }
+
                 break;
+            }
+
+            case CommandActions.START_RADIO: {
+                const { channel } = action as TextCommandAction;
+                const { radio } = store.getState() as {
+                    radio: RadioState;
+                };
+
+                // Check to see if the radio has seeds from previously played songs
+                if (radio.seeds.length === 0) {
+                    sendDiscordMessage(
+                        `Before you can use radio, you need to play a few songs first.`,
+                        channel
+                    );
+                    return;
+                }
             }
         }
 

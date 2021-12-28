@@ -1,6 +1,6 @@
 import { MessageEmbed } from "discord.js";
 import { sendDiscordEmbed } from "../../apis/discord";
-import { getTrack, getPlaylist } from "../../apis/spotify";
+import { getTrack, getPlaylist, searchSpotifyTrack } from "../../apis/spotify";
 import { getYoutubeResults } from "../../apis/youtube";
 import {
     SpotifyActions,
@@ -38,6 +38,8 @@ export const songResolution =
                     artists: addSpotifySong.resolvedArtists,
                     thumbnail: addSpotifySong.resolvedThumbnail,
                     videoId: "",
+                    spotifyArtistId: song.artists[0].id,
+                    spotifyTrackId: song.id,
                     requestor: addSpotifySong.requestor,
                     requestorChannel: addSpotifySong.requestorChannel,
                 })
@@ -71,6 +73,8 @@ export const songResolution =
                                 .join(", "),
                             thumbnail: track.album.images[0].url,
                             videoId: "",
+                            spotifyArtistId: track.artists[0].id,
+                            spotifyTrackId: track.id,
                             requestor: addSpotifyPlaylist.requestor,
                             requestorChannel:
                                 addSpotifyPlaylist.requestorChannel,
@@ -99,6 +103,9 @@ export const songResolution =
         // Handle adding of songs to the queue by search term (direct to Youtube)
         if (action.type === YoutubeActions.ADD_YOUTUBE_SONG) {
             const addYoutubeSong = action as AddYoutubeSongAction;
+            const spotifyResult = await searchSpotifyTrack(
+                addYoutubeSong.query
+            );
             const results = await getYoutubeResults(addYoutubeSong.query);
 
             // Make sure we got results back
@@ -123,6 +130,8 @@ export const songResolution =
                         videoId: addYoutubeSong.resolvedVideoId,
                         requestor: addYoutubeSong.requestor,
                         requestorChannel: addYoutubeSong.requestorChannel,
+                        spotifyArtistId: spotifyResult?.artists[0].id,
+                        spotifyTrackId: spotifyResult?.id,
                     })
                 );
             }
